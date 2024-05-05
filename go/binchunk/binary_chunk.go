@@ -33,6 +33,26 @@ const (
 	LUAC_NUM         = 370.5
 )
 
+const (
+	TAG_NIL       = 0x00
+	TAG_BOOLEAN   = 0x01
+	TAG_NUMBER    = 0x03
+	TAG_INTEGER   = 0x13
+	TAG_SHORT_STR = 0x04
+	TAG_LONG_STR  = 0x14
+)
+
+type Upvalue struct {
+	Instack byte
+	Idx     byte
+}
+
+type LocVar struct {
+	VarName string
+	StartPC uint32
+	EndPC   uint32
+}
+
 type Prototype struct {
 	Source          string
 	LineDefined     uint32
@@ -42,9 +62,16 @@ type Prototype struct {
 	MaxStackSize    byte
 	Code            []uint32
 	Constants       []interface{}
-	Upvalues        []Upvalues
+	Upvalues        []Upvalue
 	Protos          []*Prototype
 	LineInfo        []uint32
 	LocVars         []LocVar
 	UpvalueNames    []string
+}
+
+func Updump(data []byte) *Prototype {
+	r := &reader{data}
+	r.checkHeader()
+	r.readByte()
+	return r.readProto("")
 }
