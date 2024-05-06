@@ -9,6 +9,7 @@ type binaryChunk struct {
 type header struct {
 	signature       [4]byte
 	version         byte
+	format          byte
 	luacData        [6]byte
 	cintSize        byte
 	suzetSuze       byte
@@ -69,7 +70,7 @@ type Prototype struct {
 	UpvalueNames    []string
 }
 
-func Updump(data []byte) *Prototype {
+func Undump(data []byte) *Prototype {
 	r := &reader{data}
 	r.checkHeader()
 	r.readByte()
